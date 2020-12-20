@@ -1,9 +1,13 @@
 package com.assessment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.function.BiConsumer;
 
 public class ConsoleRoulette {
 
@@ -12,6 +16,33 @@ public class ConsoleRoulette {
 	private static Map<String, List<Betting>> map = new HashMap<>();
 
 	public static void main(String[] args) {
+
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				if (map.isEmpty()) {
+					System.out.println("\n No bets placed in the last round \n");
+					return;
+				}
+
+				BiConsumer<String, List<Betting>> consumer = (a, b) -> {
+					int val = 0;
+					for (Betting betting : b) {
+						if (betting.getBetValue() instanceof BetValue) {
+							val += betting.getValue() * 2;
+						} else if (betting.getValue() > 0 && betting.getValue() < 37) {
+							val += (betting.getValue() * 36);
+						}
+					}
+					System.out.println("\n Bet amount won by player - " + a + " \n " + val);
+				};
+				map.forEach((k, v) -> consumer.accept(k, v));
+				map.clear();
+
+			}
+		}, 30000);
 
 		while (true) {
 
@@ -32,6 +63,23 @@ public class ConsoleRoulette {
 			}
 
 			Betting betting = placeBet(in, nextInt);
+
+			map.computeIfAbsent(playerName, e -> new ArrayList<>());
+
+			map.get(playerName).add(betting);
+
+			int betResultValue = 0;
+			String result = "WIN";
+			if (!(betting.getBetValue() instanceof BetValue) && (betting.getValue() < 0 || betting.getValue() > 36)) {
+				result = "LOSE";
+			} else if (betting.getBetValue() instanceof BetValue) {
+				betResultValue = betting.getValue() * 2;
+			} else {
+				betResultValue = betting.getValue() * 36;
+			}
+
+			System.out.println("\n Player bet outcome winnings \n");
+			System.out.println(playerName + " - " + result + "  " + betResultValue + " \n");
 
 		}
 
