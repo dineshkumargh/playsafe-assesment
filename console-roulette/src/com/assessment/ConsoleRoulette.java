@@ -17,6 +17,55 @@ public class ConsoleRoulette {
 
 	public static void main(String[] args) {
 
+		processBettingRounds();
+
+		while (true) {
+
+			Scanner in = new Scanner(System.in);
+			System.out.println("\n Select player 1 or 2 \n 1. " + player1 + " \n 2. " + player2);
+			int playerVal = in.nextInt();
+
+			if (playerVal != 1 && playerVal != 2) {
+				continue;
+			}
+
+			String playerName = selectBetType(playerVal);
+
+			int nextInt = in.nextInt();
+
+			if (nextInt != 1 && nextInt != 2 && nextInt != 3) {
+				continue;
+			}
+
+			calculateBet(playerName, in, nextInt);
+
+		}
+
+	}
+
+	private static void calculateBet(String playerName, Scanner in, int nextInt) {
+		Betting betting = placeBet(in, nextInt);
+
+		int betResultValue = 0;
+		String result = "WIN";
+
+		map.computeIfAbsent(playerName, e -> new ArrayList<>());
+
+		map.get(playerName).add(betting);
+
+		if (!(betting.getBetValue() instanceof BetValue) && (betting.getValue() < 0 || betting.getValue() > 36)) {
+			result = "LOSE";
+		} else if (betting.getBetValue() instanceof BetValue) {
+			betResultValue = betting.getValue() * 2;
+		} else {
+			betResultValue = betting.getValue() * 36;
+		}
+
+		System.out.println("\n Player bet outcome winnings \n");
+		System.out.println(playerName + " - " + result + "  " + betResultValue + " \n");
+	}
+
+	private static void processBettingRounds() {
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 
@@ -43,46 +92,6 @@ public class ConsoleRoulette {
 
 			}
 		}, 30000);
-
-		while (true) {
-
-			Scanner in = new Scanner(System.in);
-			System.out.println("\n Select player 1 or 2 \n 1. " + player1 + " \n 2. " + player2);
-			int playerVal = in.nextInt();
-
-			if (playerVal != 1 && playerVal != 2) {
-				continue;
-			}
-
-			String playerName = selectBetType(playerVal);
-
-			int nextInt = in.nextInt();
-
-			if (nextInt != 1 && nextInt != 2 && nextInt != 3) {
-				continue;
-			}
-
-			Betting betting = placeBet(in, nextInt);
-
-			map.computeIfAbsent(playerName, e -> new ArrayList<>());
-
-			map.get(playerName).add(betting);
-
-			int betResultValue = 0;
-			String result = "WIN";
-			if (!(betting.getBetValue() instanceof BetValue) && (betting.getValue() < 0 || betting.getValue() > 36)) {
-				result = "LOSE";
-			} else if (betting.getBetValue() instanceof BetValue) {
-				betResultValue = betting.getValue() * 2;
-			} else {
-				betResultValue = betting.getValue() * 36;
-			}
-
-			System.out.println("\n Player bet outcome winnings \n");
-			System.out.println(playerName + " - " + result + "  " + betResultValue + " \n");
-
-		}
-
 	}
 
 	private static Betting placeBet(Scanner in, int nextInt) {
