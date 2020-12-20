@@ -11,8 +11,24 @@ public class ConverterController {
 	@Autowired
 	private IConverterService converterService;
 
-	@GetMapping(value = "/conversions/ktoc/{value}")
+	@GetMapping(value = "/conversions/ctok/{value}")
 	public double celciusToKelvin(@PathVariable double value) {
-		return converterService.celciusToKelvin(value);
+		return converterService.celsiusToKelvin(value);
 	}
+
+	@GetMapping(value = "/conversions/ktoc/{value}")
+	public double kelvinToCelcius(@PathVariable double value) {
+		return converterService.kelvinToCelsius(value);
+	}
+
+	@GetMapping(value = "/conversions/ktom/{value}")
+	public double kilometerToMile(@PathVariable double value) {
+		return converterService.kilometerToMile(value);
+	}
+
+	@GetMapping(value = "/conversions/mtok/{value}")
+	public double mileToKilometer(@PathVariable double value) {
+		return converterService.mileToKilometer(value);
+	}
+
 }
