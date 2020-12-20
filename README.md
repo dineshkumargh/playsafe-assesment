@@ -13,3 +13,7 @@ The mtok endpoint should produce, when given an input amount in miles, an output
 
 /conversions/ktom
 The ktom endpoint should produce, when given an input amount in kilometers, an output amount in miles.
+
+Part 2 – Console Roulette
+
+See the attached pdf file.
